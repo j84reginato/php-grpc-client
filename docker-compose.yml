@@ -1,0 +1,31 @@
+version: "3.2"
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx_grpc_client
+    privileged: true
+    ports:
+      - 80:80
+    networks:
+      - default
+      - mm_gateway
+    volumes:
+      - ./:/app
+      - ./docker/nginx/app.conf:/etc/nginx/conf.d/default.conf
+
+  php:
+    build: ./docker/php-7
+    container_name: php_grpc_client
+    privileged: true
+    networks:
+      - default
+      - mm_gateway
+    volumes:
+      - ./:/app
+    environment:
+      PHP_IDE_CONFIG: serverName=docker
+      XDEBUG_CONFIG: idekey=grpc_client
+
+networks:
+  mm_gateway:
+    external: true
